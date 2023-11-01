@@ -16,23 +16,6 @@ type XLSXReader struct {
 	body      [][]interface{}
 }
 
-func (t XLSXReader) Names() ([]string, error) {
-	return t.names, nil
-}
-
-func (t XLSXReader) Types() ([]string, error) {
-	return t.types, nil
-}
-
-func (t XLSXReader) PreReadRow() [][]interface{} {
-	return t.body
-}
-
-// ReadRow only returns EOF.
-func (t XLSXReader) ReadRow(row []interface{}) ([]interface{}, error) {
-	return nil, io.EOF
-}
-
 func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, error) {
 	r := XLSXReader{}
 
@@ -40,7 +23,12 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 	if err != nil {
 		return nil, err
 	}
-	sheet := opts.InJQuery
+
+	sheet := "Sheet1"
+	if len(opts.InJQuery) > 0 {
+		sheet = opts.InJQuery
+	}
+
 	rows, err := f.GetRows(sheet)
 	if err != nil {
 		return nil, err
@@ -65,6 +53,31 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 	}
 	r.reader = f
 	return r, nil
+}
+
+func (t XLSXReader) Names() ([]string, error) {
+	return t.names, nil
+}
+
+func (t XLSXReader) Types() ([]string, error) {
+	return t.types, nil
+}
+
+func (t XLSXReader) PreReadRow() [][]interface{} {
+	return t.body
+}
+
+// ReadRow only returns EOF.
+func (t XLSXReader) ReadRow(row []interface{}) ([]interface{}, error) {
+	return nil, io.EOF
+}
+
+func XLSXSheet(fileName string) ([]string, error) {
+	f, err := excelize.OpenFile(fileName)
+	if err != nil {
+		return nil, err
+	}
+	return f.GetSheetList(), nil
 }
 
 func init() {
