@@ -17,14 +17,16 @@ type XLSXReader struct {
 }
 
 func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, error) {
-	r := XLSXReader{}
+	trdsql.EnableDebug()
 
+	r := XLSXReader{}
 	f, err := excelize.OpenReader(reader)
 	if err != nil {
 		return nil, err
 	}
 
-	sheet := "Sheet1"
+	list := f.GetSheetList()
+	sheet := list[0]
 	if len(opts.InJQuery) > 0 {
 		sheet = opts.InJQuery
 	}
@@ -35,40 +37,54 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 	}
 	r.tableName = sheet
 
-	for j, row := range rows {
-		if j == 0 {
-			r.names = make([]string, len(row))
-			r.types = make([]string, len(row))
-			for i := 0; i < len(row); i++ {
-				r.names[i] = fmt.Sprintf("C%d", i+1)
-				r.types[i] = "text"
-			}
+	columnNum := 0
+	for i := 0; i < len(rows); i++ {
+		row := rows[i]
+		columnNum = max(columnNum, len(row))
+		if i > opts.InPreRead {
+			break
 		}
+	}
 
-		data := make([]interface{}, len(row))
+	r.names = make([]string, columnNum)
+	r.types = make([]string, columnNum)
+	for i := 0; i < columnNum; i++ {
+		if opts.InHeader && len(rows[0]) > i && rows[0][i] != "" {
+			r.names[i] = rows[0][i]
+		} else {
+			r.names[i] = fmt.Sprintf("C%d", i+1)
+		}
+		r.types[i] = "text"
+	}
+
+	for j, row := range rows {
+		if j == 0 && opts.InHeader {
+			continue
+		}
+		data := make([]interface{}, columnNum)
 		for i, colCell := range row {
 			data[i] = colCell
 		}
 		r.body = append(r.body, data)
 	}
+
 	r.reader = f
 	return r, nil
 }
-
-func (t XLSXReader) Names() ([]string, error) {
-	return t.names, nil
+func (r XLSXReader) Names() ([]string, error) {
+	return r.names, nil
 }
 
-func (t XLSXReader) Types() ([]string, error) {
-	return t.types, nil
+func (r XLSXReader) Types() ([]string, error) {
+	return r.types, nil
 }
 
-func (t XLSXReader) PreReadRow() [][]interface{} {
-	return t.body
+func (r XLSXReader) PreReadRow() [][]interface{} {
+	return r.body
 }
 
 // ReadRow only returns EOF.
-func (t XLSXReader) ReadRow(row []interface{}) ([]interface{}, error) {
+func (r XLSXReader) ReadRow(row []interface{}) ([]interface{}, error) {
 	return nil, io.EOF
 }
 

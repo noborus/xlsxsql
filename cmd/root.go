@@ -16,7 +16,7 @@ var rootCmd = &cobra.Command{
 	SilenceUsage: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		if Ver {
-			fmt.Printf("mdtsql version %s rev:%s\n", Version, Revision)
+			fmt.Printf("xlsxsql version %s rev:%s\n", Version, Revision)
 			return
 		}
 		cmd.Help()

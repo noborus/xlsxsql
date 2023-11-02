@@ -41,7 +41,10 @@ func exec(args []string) error {
 	format := outFormat()
 
 	trd := trdsql.NewTRDSQL(
-		trdsql.NewImporter(),
+		trdsql.NewImporter(
+			trdsql.InHeader(true),
+			trdsql.InPreRead(100),
+		),
 		trdsql.NewExporter(
 			trdsql.NewWriter(
 				trdsql.OutFormat(format),
