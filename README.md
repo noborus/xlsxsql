@@ -2,7 +2,19 @@
 
 Execute SQL on xlsx file.
 
+## Install
+
+```console
+go install github.com/noborus/xlsxsql/cmd/xlsxsql@latest
+```
+
 ## Usage
+
+### list sheets
+
+```console
+$ xlsxsql list test.xlsx
+```
 
 ### Basic usage
 
@@ -24,8 +36,10 @@ $ xlsxsql query "SELECT * FROM test.xlsx::Sheet2"
 $ xlsxsql table test.xlsx::Sheet2
 ```
 
-### list sheets
+### Output format
 
 ```console
-$ xlsxsql list test.xlsx
+$ xlsxsql query --out JSONL "SELECT * FROM test.xlsx::Sheet2"
 ```
+
+You can choose from csv, ltsv, json, jsonl, yaml, at, md, vf, and tbln formats.
