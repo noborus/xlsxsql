@@ -45,8 +45,17 @@ func Execute(version string, revision string) {
 // Ver is version information.
 var Ver bool
 
+// OutFormat is output format.
+var OutFormat = "CSV"
+
+var Skip int
+
+var Header bool
+
 func init() {
 	rootCmd.PersistentFlags().BoolVarP(&Ver, "version", "v", false, "display version information")
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.PersistentFlags().IntVarP(&Skip, "skip", "s", 0, "Skip the number of lines")
+	rootCmd.PersistentFlags().BoolVarP(&Header, "header", "H", false, "Output header")
 	rootCmd.PersistentFlags().StringVarP(&OutFormat, "out", "o", "CSV", "Output Format")
 }

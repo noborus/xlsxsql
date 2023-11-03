@@ -3,7 +3,7 @@ module github.com/noborus/xlsxsql
 go 1.21.3
 
 require (
-	github.com/noborus/trdsql v0.12.2-0.20231101041216-02cf3c0b8b37
+	github.com/noborus/trdsql v0.12.2-0.20231102055713-0e3b994c44e2
 	github.com/spf13/cobra v1.7.0
 	github.com/xuri/excelize/v2 v2.8.0
 )
@@ -62,7 +62,7 @@ require (
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.7.2 // indirect
 	modernc.org/opt v0.1.3 // indirect
-	modernc.org/sqlite v1.26.0 // indirect
+	modernc.org/sqlite v1.27.0 // indirect
 	modernc.org/strutil v1.2.0 // indirect
 	modernc.org/token v1.1.0 // indirect
 )

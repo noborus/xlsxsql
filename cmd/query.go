@@ -7,42 +7,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var OutFormat = "CSV"
-
-func outFormat() trdsql.Format {
-	switch strings.ToUpper(OutFormat) {
-	case "CSV":
-		return trdsql.CSV
-	case "LTSV":
-		return trdsql.LTSV
-	case "JSON":
-		return trdsql.JSON
-	case "TBLN":
-		return trdsql.TBLN
-	case "RAW":
-		return trdsql.RAW
-	case "MD":
-		return trdsql.MD
-	case "AT":
-		return trdsql.AT
-	case "VF":
-		return trdsql.VF
-	case "JSONL":
-		return trdsql.JSONL
-	case "YAML":
-		return trdsql.YAML
-	default:
-		return trdsql.CSV
-	}
-}
-
 func exec(args []string) error {
 	query := strings.Join(args, " ")
-	format := outFormat()
+	format := trdsql.OutputFormat(strings.ToUpper(OutFormat))
 
 	trd := trdsql.NewTRDSQL(
 		trdsql.NewImporter(
-			trdsql.InHeader(true),
+			trdsql.InSkip(Skip),
+			trdsql.InHeader(Header),
 			trdsql.InPreRead(100),
 		),
 		trdsql.NewExporter(
