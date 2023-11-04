@@ -55,11 +55,17 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 			skip++
 		}
 	}
+	nameMap := make(map[string]bool)
 	r.names = make([]string, columnNum)
 	r.types = make([]string, columnNum)
 	for i := 0; i < columnNum; i++ {
 		if opts.InHeader && len(rows[header]) > i && rows[header][i] != "" {
-			r.names[i] = rows[header][i]
+			if _, ok := nameMap[rows[header][i]]; ok {
+				r.names[i] = fmt.Sprintf("C%d", i+1)
+			} else {
+				nameMap[rows[header][i]] = true
+				r.names[i] = rows[header][i]
+			}
 		} else {
 			r.names[i] = fmt.Sprintf("C%d", i+1)
 		}

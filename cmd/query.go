@@ -19,6 +19,7 @@ func exec(args []string) error {
 		),
 		trdsql.NewExporter(
 			trdsql.NewWriter(
+				trdsql.OutHeader(OutHeader),
 				trdsql.OutFormat(format),
 			),
 		),

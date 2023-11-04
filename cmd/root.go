@@ -49,6 +49,9 @@ var Ver bool
 // OutFormat is output format.
 var OutFormat = "CSV"
 
+// OutHeader is output header.
+var OutHeader bool
+
 var Skip int
 
 var Header bool
@@ -56,6 +59,7 @@ var Header bool
 func init() {
 	rootCmd.PersistentFlags().BoolVarP(&Ver, "version", "v", false, "display version information")
 	rootCmd.PersistentFlags().IntVarP(&Skip, "skip", "s", 0, "Skip the number of lines")
-	rootCmd.PersistentFlags().BoolVarP(&Header, "header", "H", false, "Output header")
+	rootCmd.PersistentFlags().BoolVarP(&Header, "header", "H", false, "Input header")
+	rootCmd.PersistentFlags().BoolVarP(&OutHeader, "out-header", "O", false, "Output header")
 	rootCmd.PersistentFlags().StringVarP(&OutFormat, "out", "o", "CSV", "Output Format[CSV|AT|LTSV|JSON|JSONL|TBLN|RAW|MD|VF|YAML]")
 }
