@@ -29,8 +29,9 @@ func exec(args []string) error {
 // queryCmd represents the query command
 var queryCmd = &cobra.Command{
 	Use:   "query",
-	Short: "query for xlsx",
-	Long:  `query for xlsx`,
+	Short: "Executes the specified SQL query against the xlsx file",
+	Long: `Executes the specified SQL query against the xlsx file.
+Output to CSV and various formats.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return exec(args)
 	},

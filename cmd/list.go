@@ -11,6 +11,7 @@ import (
 var listSheetsCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List the sheets of the xlsx file",
+	Long:  `List the sheets of the xlsx file.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return fmt.Errorf("Please specify the xlsx file.")

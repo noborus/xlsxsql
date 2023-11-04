@@ -10,9 +10,10 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:          "xlsxsql",
-	Short:        "sql for xlsx",
-	Long:         `sql for xlsx`,
+	Use:   "xlsxsql",
+	Short: "Execute SQL against xlsx file.",
+	Long: `Execute SQL against xlsx file.
+Output to CSV and various formats.`,
 	SilenceUsage: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		if Ver {
@@ -54,8 +55,7 @@ var Header bool
 
 func init() {
 	rootCmd.PersistentFlags().BoolVarP(&Ver, "version", "v", false, "display version information")
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.PersistentFlags().IntVarP(&Skip, "skip", "s", 0, "Skip the number of lines")
 	rootCmd.PersistentFlags().BoolVarP(&Header, "header", "H", false, "Output header")
-	rootCmd.PersistentFlags().StringVarP(&OutFormat, "out", "o", "CSV", "Output Format")
+	rootCmd.PersistentFlags().StringVarP(&OutFormat, "out", "o", "CSV", "Output Format[CSV|AT|LTSV|JSON|JSONL|TBLN|RAW|MD|VF|YAML]")
 }

@@ -9,8 +9,8 @@ import (
 // tableCmd represents the table command
 var tableCmd = &cobra.Command{
 	Use:   "table",
-	Short: "sql(SELECT * FROM table) for xlsx",
-	Long:  ``,
+	Short: "SQL(SELECT * FROM table) for xlsx",
+	Long:  `Execute SELECT * FROM table, assuming the xlsx file as a table.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return fmt.Errorf("Please specify the xlsx file.")

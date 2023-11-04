@@ -51,9 +51,10 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 	if header > len(rows) {
 		header = 0
 	} else {
-		skip++
+		if opts.InHeader {
+			skip++
+		}
 	}
-
 	r.names = make([]string, columnNum)
 	r.types = make([]string, columnNum)
 	for i := 0; i < columnNum; i++ {
