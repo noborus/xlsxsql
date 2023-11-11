@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: [ 'stable', 'oldstable' ]
+        go-version: [ 'stable' ]
     name: Go  ${{ matrix.go-version }}
     steps:
     - uses: actions/checkout@v4
