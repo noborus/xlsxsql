@@ -1,6 +1,6 @@
 module github.com/noborus/xlsxsql
 
-go 1.21.3
+go 1.21
 
 require (
 	github.com/noborus/trdsql v0.13.0
