@@ -1,3 +1,6 @@
+// Package xlsxsql provides a reader for XLSX files.
+// It uses the trdsql and excelize/v2 packages to read XLSX files and convert them into SQL tables.
+// The main type is XLSXReader, which implements the trdsql.Reader interface.
 package xlsxsql
 
 import (
@@ -8,6 +11,8 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
+var ErrSheetNotFound = fmt.Errorf("sheet not found")
+
 type XLSXReader struct {
 	tableName string
 	names     []string
@@ -15,7 +20,8 @@ type XLSXReader struct {
 	body      [][]interface{}
 }
 
-// NewXLSXReader returns a trdsql.Reader interface for XLSX.
+// NewXLSXReader function takes an io.Reader and trdsql.ReadOpts, and returns a new XLSXReader.
+// It reads the XLSX file, retrieves the sheet specified by the InJQuery option, and reads the rows into the XLSXReader.
 func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, error) {
 	f, err := excelize.OpenReader(reader)
 	if err != nil {
@@ -90,7 +96,7 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 func getSheet(f *excelize.File, sheet string) (string, error) {
 	list := f.GetSheetList()
 	if len(list) == 0 {
-		return "", fmt.Errorf("sheet not found")
+		return "", ErrSheetNotFound
 	}
 	if sheet == "" {
 		sheet = list[0]
@@ -100,17 +106,20 @@ func getSheet(f *excelize.File, sheet string) (string, error) {
 			return s, nil
 		}
 	}
-	return "", fmt.Errorf("sheet not found")
+	return "", ErrSheetNotFound
 }
 
+// Names returns the column names of the XLSX file.
 func (r XLSXReader) Names() ([]string, error) {
 	return r.names, nil
 }
 
+// Types returns the column types of the XLSX file.
 func (r XLSXReader) Types() ([]string, error) {
 	return r.types, nil
 }
 
+// PreReadRow returns the rows of the XLSX file.
 func (r XLSXReader) PreReadRow() [][]interface{} {
 	return r.body
 }
@@ -130,5 +139,6 @@ func XLSXSheet(fileName string) ([]string, error) {
 }
 
 func init() {
+	// Use XLSXReader for extension xlsx.
 	trdsql.RegisterReaderFunc("XLSX", NewXLSXReader)
 }
