@@ -89,10 +89,12 @@ For example, if test.xlsx contains the following data in its first sheet:
 
 The output will be:
 
+```csv
 Name,Age
 Alice,20
 Bob,25
 Carol,30
+```
 
 ### Specify sheet
 
@@ -119,3 +121,19 @@ xlsxsql query --out JSONL "SELECT * FROM test.xlsx::Sheet2"
 ```
 
 You can choose from CSV, LTSV, JSON, JSONL, TBLN, RAW, MD, VF, YAML.
+
+### Skip and Header Options
+
+You can use the `--skip` option to ignore a certain number of rows at the beginning of the sheet. 
+For example, to skip the first two rows, you would use:
+
+```console
+xlsxsql query --skip 2 --out JSONL "SELECT * FROM test.xlsx::Sheet2"
+```
+
+The `--header` option treats the first row (excluding any rows ignored by `--skip``) as the header.
+For example, you would use it like this:
+
+```console
+xlsxsql query --header --out JSONL "SELECT * FROM test.xlsx::Sheet2"
+```
