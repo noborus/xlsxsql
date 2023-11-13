@@ -11,7 +11,10 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-var ErrSheetNotFound = fmt.Errorf("sheet not found")
+var (
+	ErrSheetNotFound = fmt.Errorf("sheet not found")
+	ErrNoData        = fmt.Errorf("no data")
+)
 
 type XLSXReader struct {
 	tableName string
@@ -53,6 +56,9 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 		if i > opts.InPreRead {
 			break
 		}
+	}
+	if columnNum == 0 {
+		return nil, ErrNoData
 	}
 	if header > len(rows) {
 		header = 0
