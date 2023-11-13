@@ -14,6 +14,8 @@ builds:
       - windows
       - darwin
     id: "xlsxsql"
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.revision={{.Commit}}
     main: ./cmd/xlsxsql
     ignore:
       - goos: windows
@@ -46,7 +48,7 @@ changelog:
 brews:
   -
     name: xlsxsql
-    tap:
+    repository:
       owner: noborus
       name: homebrew-tap
       token: "{{ .Env.TAP_GITHUB_TOKEN }}"
