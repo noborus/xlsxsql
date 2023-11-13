@@ -38,6 +38,7 @@ mv xlsxsql /usr/local/bin/
 
 ```console
 $ xlsxsql --help
+Execute SQL against xlsx file.
 output to CSV and various formats.
 
 Usage:
