@@ -7,23 +7,33 @@ Output to various formats.
 
 ## Install
 
+### Go install
+
 ```console
 go install github.com/noborus/xlsxsql/cmd/xlsxsql@latest
+```
+
+### Homebrew
+
+You can install Homebrew's xlsxsql with the following command:
+
+```console
+brew install noborus/tap/xlsxsql
 ```
 
 ### Binary Downloads
 
 Precompiled binaries for xlsxsql are available for various platforms and architectures. You can download them from the [GitHub Releases](https://github.com/noborus/xlsxsql/releases) page.
 
-Here are the available binaries:
+The following binaries can be downloaded from release.
 
-- `xlsxsql_Darwin_arm64.tar.gz`
-- `xlsxsql_Darwin_x86_64.tar.gz`
-- `xlsxsql_Linux_arm64.tar.gz`
-- `xlsxsql_Linux_i386.tar.gz`
-- `xlsxsql_Linux_x86_64.tar.gz`
-- `xlsxsql_Windows_arm64.zip`
-- `xlsxsql_Windows_x86_64.zip`
+- Darwin_arm64
+- Darwin_x86_64
+- Linux_arm64
+- Linux_i386
+- Linux_x86_64
+- Windows_arm64
+- Windows_x86_64
 
 To install a binary, download the appropriate file for your system, extract it, and place the `xlsxsql` executable in a directory included in your system's `PATH`.
 
