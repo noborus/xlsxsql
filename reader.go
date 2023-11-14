@@ -17,11 +17,11 @@ var (
 	ErrNoData        = fmt.Errorf("no data")
 )
 
+// XLSXReader is a reader for XLSX files.
 type XLSXReader struct {
-	tableName string
-	names     []string
-	types     []string
-	body      [][]interface{}
+	names []string
+	types []string
+	body  [][]interface{}
 }
 
 // NewXLSXReader function takes an io.Reader and trdsql.ReadOpts, and returns a new XLSXReader.
@@ -37,23 +37,23 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 		return nil, err
 	}
 
-	trimCell := false
+	isFilter := false
 	cellX, cellY := 0, 0
 	if extCell != "" {
 		cellX, cellY, err = excelize.CellNameToCoordinates(extCell)
 		if err != nil {
 			return nil, err
 		}
-		trimCell = true
+		isFilter = true
 		cellX--
 	}
+
 	rows, err := f.GetRows(sheet)
 	if err != nil {
 		return nil, err
 	}
 
 	r := XLSXReader{}
-	r.tableName = sheet
 	skip := 0
 	if cellY > 0 {
 		skip = cellY - 1
@@ -90,10 +90,10 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 	r.names, r.types = nameType(rows[header], cellX, columnNum, opts.InHeader)
 	rowNum := len(rows) - skip
 	body := make([][]interface{}, 0, rowNum)
-	dataFlag := make([]bool, columnNum)
+	validColumns := make([]bool, columnNum)
 	for i := 0; i < len(r.names); i++ {
 		if r.names[i] != "" {
-			dataFlag[i] = true
+			validColumns[i] = true
 		} else {
 			r.names[i] = fmt.Sprintf("C%d", i+1)
 		}
@@ -106,39 +106,45 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 		for c, i := 0, cellX; i < len(row); i++ {
 			data[c] = row[i]
 			if data[c] != "" {
-				dataFlag[c] = true
+				validColumns[c] = true
 			}
 			c++
 		}
 		body = append(body, data)
 	}
 
-	if trimCell {
-		count := len(dataFlag)
-		start := false
-		for i, f := range dataFlag {
-			if f {
-				start = true
-			}
-			if start && !f {
-				count = i
-				break
-			}
-		}
-		r.names = r.names[:count]
-		r.types = r.types[:count]
-		r.body = make([][]interface{}, 0, rowNum)
-		for _, row := range body {
-			cols := make([]interface{}, count)
-			for i := 0; i < count; i++ {
-				cols[i] = row[i]
-			}
-			r.body = append(r.body, cols)
-		}
-	} else {
+	if !isFilter {
 		r.body = body
+		return r, nil
 	}
+
+	r.body = filterColumns(body, validColumns)
+	r.names = r.names[:len(r.body[0])]
+	r.types = r.types[:len(r.body[0])]
 	return r, nil
+}
+
+func filterColumns(body [][]interface{}, dataFlag []bool) [][]interface{} {
+	count := len(dataFlag)
+	start := false
+	for i, f := range dataFlag {
+		if f {
+			start = true
+		}
+		if start && !f {
+			count = i
+			break
+		}
+	}
+	newBody := make([][]interface{}, 0, len(body))
+	for _, row := range body {
+		cols := make([]interface{}, count)
+		for i := 0; i < count; i++ {
+			cols[i] = row[i]
+		}
+		newBody = append(newBody, cols)
+	}
+	return newBody
 }
 
 func parseExtend(ext string) (string, string) {
