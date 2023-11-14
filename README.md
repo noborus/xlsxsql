@@ -2,6 +2,21 @@
 
 Execute SQL on xlsx file.
 
+![xlsx](docs/xlsx-multi.png)
+
+```console
+xlsxsql query -H -o md \
+"SELECT a.id,a.name,b.price FROM testdata/test3.xlsx::.C1 AS a 
+  LEFT JOIN testdata/test3.xlsx::.F4 AS b ON a.id=b.id 
+ WHERE a.id != ''"
+```
+
+| id |  name  | price |
+|----|--------|-------|
+|  1 | apple  |   100 |
+|  2 | orange |    50 |
+|  3 | melon  |   500 |
+
 Execute SQL on xlsx files using [xcelize](https://github.com/qax-os/excelize) and [trdsql](https://github.com/noborus/trdsql).
 Output to various formats.
 
