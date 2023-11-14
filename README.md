@@ -6,8 +6,8 @@ Execute SQL on xlsx file.
 
 ```console
 xlsxsql query -H -o md \
-"SELECT a.id,a.name,b.price FROM testdata/test3.xlsx::.C1 AS a 
-  LEFT JOIN testdata/test3.xlsx::.F4 AS b ON a.id=b.id 
+"SELECT a.id,a.name,b.price FROM testdata/test3.xlsx::.C1 AS a
+  LEFT JOIN testdata/test3.xlsx::.F4 AS b ON a.id=b.id
  WHERE a.id != ''"
 ```
 
@@ -116,6 +116,31 @@ Carol,30
 
 ```console
 xlsxsql query "SELECT * FROM test.xlsx::Sheet2"
+```
+
+### Specify cell
+
+Cell can be specified by using a dot "." after the sheet.
+
+```console
+xlsxsql query "SELECT * FROM test3.xlsx::Sheet1.C1"
+```
+
+Optional if the sheet is the first sheet.
+
+```console
+xlsxsql query "SELECT * FROM test3.xlsx::.C1"
+```
+
+Note: If cell is specified, the table up to the blank column is considered to be the table.
+​
+This allows multiple tables to be specified on one sheet, and JOIN is also possible.
+
+```console
+xlsxsql query -H -o md \
+"SELECT a.id,a.name,b.price FROM testdata/test3.xlsx::.C1 AS a
+  LEFT JOIN testdata/test3.xlsx::.F4 AS b ON a.id=b.id
+ WHERE a.id != ''"
 ```
 
 ### Shorthand designation
