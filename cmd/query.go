@@ -8,6 +8,7 @@ import (
 )
 
 func exec(args []string) error {
+	//trdsql.EnableDebug()
 	query := strings.Join(args, " ")
 	format := trdsql.OutputFormat(strings.ToUpper(OutFormat))
 

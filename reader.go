@@ -6,6 +6,7 @@ package xlsxsql
 import (
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/noborus/trdsql"
 	"github.com/xuri/excelize/v2"
@@ -30,12 +31,22 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 	if err != nil {
 		return nil, err
 	}
-
-	sheet, err := getSheet(f, opts.InJQuery)
+	extSheet, extCell := parseExtend(opts.InJQuery)
+	sheet, err := getSheet(f, extSheet)
 	if err != nil {
 		return nil, err
 	}
 
+	trimCell := false
+	cellX, cellY := 0, 0
+	if extCell != "" {
+		cellX, cellY, err = excelize.CellNameToCoordinates(extCell)
+		if err != nil {
+			return nil, err
+		}
+		trimCell = true
+		cellX--
+	}
 	rows, err := f.GetRows(sheet)
 	if err != nil {
 		return nil, err
@@ -43,7 +54,14 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 
 	r := XLSXReader{}
 	r.tableName = sheet
-	skip := opts.InSkip
+	skip := 0
+	if cellY > 0 {
+		skip = cellY - 1
+	}
+	if opts.InSkip > 0 {
+		skip = opts.InSkip
+	}
+
 	columnNum := 0
 	header := 0
 	for i := 0; i < len(rows); i++ {
@@ -52,14 +70,15 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 			continue
 		}
 		row := rows[i]
-		columnNum = max(columnNum, len(row))
+		columnNum = max(columnNum, len(row)-cellX)
 		if i > opts.InPreRead {
 			break
 		}
 	}
-	if columnNum == 0 {
+	if columnNum <= 0 {
 		return nil, ErrNoData
 	}
+
 	if header > len(rows) {
 		header = 0
 	} else {
@@ -67,36 +86,92 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 			skip++
 		}
 	}
-	nameMap := make(map[string]bool)
-	r.names = make([]string, columnNum)
-	r.types = make([]string, columnNum)
-	for i := 0; i < columnNum; i++ {
-		if opts.InHeader && len(rows[header]) > i && rows[header][i] != "" {
-			if _, ok := nameMap[rows[header][i]]; ok {
-				r.names[i] = fmt.Sprintf("C%d", i+1)
-			} else {
-				nameMap[rows[header][i]] = true
-				r.names[i] = rows[header][i]
-			}
+
+	r.names, r.types = nameType(rows[header], cellX, columnNum, opts.InHeader)
+	rowNum := len(rows) - skip
+	body := make([][]interface{}, 0, rowNum)
+	dataFlag := make([]bool, columnNum)
+	for i := 0; i < len(r.names); i++ {
+		if r.names[i] != "" {
+			dataFlag[i] = true
 		} else {
 			r.names[i] = fmt.Sprintf("C%d", i+1)
 		}
-		r.types[i] = "text"
 	}
-
-	r.body = make([][]interface{}, 0, len(rows)-skip)
 	for j, row := range rows {
 		if j < skip {
 			continue
 		}
 		data := make([]interface{}, columnNum)
-		for i, colCell := range row {
-			data[i] = colCell
+		for c, i := 0, cellX; i < len(row); i++ {
+			data[c] = row[i]
+			if data[c] != "" {
+				dataFlag[c] = true
+			}
+			c++
 		}
-		r.body = append(r.body, data)
+		body = append(body, data)
 	}
 
+	if trimCell {
+		count := len(dataFlag)
+		start := false
+		for i, f := range dataFlag {
+			if f {
+				start = true
+			}
+			if start && !f {
+				count = i
+				break
+			}
+		}
+		r.names = r.names[:count]
+		r.types = r.types[:count]
+		r.body = make([][]interface{}, 0, rowNum)
+		for _, row := range body {
+			cols := make([]interface{}, count)
+			for i := 0; i < count; i++ {
+				cols[i] = row[i]
+			}
+			r.body = append(r.body, cols)
+		}
+	} else {
+		r.body = body
+	}
 	return r, nil
+}
+
+func parseExtend(ext string) (string, string) {
+	e := strings.Split(ext, ".")
+	if len(e) == 1 {
+		return e[0], ""
+	} else if len(e) == 2 {
+		return e[0], e[1]
+	} else {
+		return e[0], strings.Join(e[1:], ".")
+	}
+}
+
+func nameType(row []string, cellX int, columnNum int, header bool) ([]string, []string) {
+	nameMap := make(map[string]bool)
+	names := make([]string, columnNum)
+	types := make([]string, columnNum)
+	c := 0
+	for i := cellX; i < cellX+columnNum; i++ {
+		if header && len(row) > i && row[i] != "" {
+			if _, ok := nameMap[row[i]]; ok {
+				names[c] = fmt.Sprintf("C%d", i+1)
+			} else {
+				nameMap[row[i]] = true
+				names[c] = row[i]
+			}
+		} else {
+			names[c] = ""
+		}
+		types[c] = "text"
+		c++
+	}
+	return names, types
 }
 
 func getSheet(f *excelize.File, sheet string) (string, error) {
