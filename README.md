@@ -2,6 +2,21 @@
 
 Execute SQL on xlsx file.
 
+![xlsx](docs/xlsx-multi.png)
+
+```console
+xlsxsql query -H -o md \
+"SELECT a.id,a.name,b.price FROM testdata/test3.xlsx::.C1 AS a
+  LEFT JOIN testdata/test3.xlsx::.F4 AS b ON a.id=b.id
+ WHERE a.id != ''"
+```
+
+| id |  name  | price |
+|----|--------|-------|
+|  1 | apple  |   100 |
+|  2 | orange |    50 |
+|  3 | melon  |   500 |
+
 Execute SQL on xlsx files using [xcelize](https://github.com/qax-os/excelize) and [trdsql](https://github.com/noborus/trdsql).
 Output to various formats.
 
@@ -113,10 +128,35 @@ Carol,30
 xlsxsql query "SELECT * FROM test.xlsx::Sheet2"
 ```
 
+### Specify cell
+
+Cell can be specified by using a dot "." after the sheet.
+
+```console
+xlsxsql query "SELECT * FROM test3.xlsx::Sheet1.C1"
+```
+
+Optional if the sheet is the first sheet.
+
+```console
+xlsxsql query "SELECT * FROM test3.xlsx::.C1"
+```
+
+Note: If cell is specified, the table up to the blank column is considered to be the table.
+​
+This allows multiple tables to be specified on one sheet, and JOIN is also possible.
+
+```console
+xlsxsql query -H -o md \
+"SELECT a.id,a.name,b.price FROM testdata/test3.xlsx::.C1 AS a
+  LEFT JOIN testdata/test3.xlsx::.F4 AS b ON a.id=b.id
+ WHERE a.id != ''"
+```
+
 ### Shorthand designation
 
 The `table` command is a shorthand that allows you to quickly display the contents of a specified sheet in a table format.
-The syntax is `xlsxsql table <filename>::<sheetname>`.
+The syntax is `xlsxsql table <filename>::<sheetname>.<cellname>`.
 If no sheet name is specified, the first sheet of the Excel file will be targeted.
 
 Here is an example:
@@ -135,7 +175,7 @@ You can choose from CSV, LTSV, JSON, JSONL, TBLN, RAW, MD, VF, YAML.
 
 ### Skip and Header Options
 
-You can use the `--skip` option to ignore a certain number of rows at the beginning of the sheet. 
+You can use the `--skip` option to ignore a certain number of rows at the beginning of the sheet.
 For example, to skip the first two rows, you would use:
 
 ```console
