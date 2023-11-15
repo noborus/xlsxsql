@@ -104,6 +104,21 @@ func TestXLSXReader_PreReadRow(t *testing.T) {
 				{"3", "melon"},
 			},
 		},
+		{
+			"test3",
+			xlsxReader{
+				fileName: "testdata/test3.xlsx",
+				opts: &trdsql.ReadOpts{
+					InHeader: true,
+					InJQuery: "Sheet1.C1",
+				},
+			},
+			[][]interface{}{
+				{"1", "apple"},
+				{"2", "orange"},
+				{"3", "melon"},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

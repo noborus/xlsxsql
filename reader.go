@@ -109,6 +109,9 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 				validColumns[c] = true
 			}
 			c++
+			if len(data) <= c {
+				break
+			}
 		}
 		body = append(body, data)
 	}
@@ -124,7 +127,7 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 	return r, nil
 }
 
-func filterColumns(body [][]interface{}, dataFlag []bool) [][]interface{} {
+func filterColumns(src [][]interface{}, dataFlag []bool) [][]interface{} {
 	count := len(dataFlag)
 	start := false
 	for i, f := range dataFlag {
@@ -136,15 +139,22 @@ func filterColumns(body [][]interface{}, dataFlag []bool) [][]interface{} {
 			break
 		}
 	}
-	newBody := make([][]interface{}, 0, len(body))
-	for _, row := range body {
+	dst := make([][]interface{}, 0, len(src))
+	for _, row := range src {
 		cols := make([]interface{}, count)
+		valid := false
 		for i := 0; i < count; i++ {
 			cols[i] = row[i]
+			if cols[i] != "" {
+				valid = true
+			}
 		}
-		newBody = append(newBody, cols)
+		if !valid {
+			break
+		}
+		dst = append(dst, cols)
 	}
-	return newBody
+	return dst
 }
 
 func parseExtend(ext string) (string, string) {
