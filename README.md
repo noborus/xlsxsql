@@ -7,8 +7,7 @@ Execute SQL on xlsx file.
 ```console
 xlsxsql query -H -o md \
 "SELECT a.id,a.name,b.price FROM testdata/test3.xlsx::.C1 AS a
-  LEFT JOIN testdata/test3.xlsx::.F4 AS b ON a.id=b.id
- WHERE a.id != ''"
+  LEFT JOIN testdata/test3.xlsx::.F4 AS b ON a.id=b.id"
 ```
 
 | id |  name  | price |
@@ -148,9 +147,10 @@ This allows multiple tables to be specified on one sheet, and JOIN is also possi
 
 ```console
 xlsxsql query -H -o md \
-"SELECT a.id,a.name,b.price FROM testdata/test3.xlsx::.C1 AS a
-  LEFT JOIN testdata/test3.xlsx::.F4 AS b ON a.id=b.id
- WHERE a.id != ''"
+"SELECT a.id,a.name,b.price 
+  FROM testdata/test3.xlsx::.C1 AS a
+  LEFT JOIN testdata/test3.xlsx::.F4 AS b 
+    ON a.id=b.id"
 ```
 
 ### Shorthand designation
