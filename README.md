@@ -1,14 +1,11 @@
 # xlsxsql
 
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/noborus/xlsxsql)](https://pkg.go.dev/github.com/noborus/xlsxsql)
+[![Actions Status](https://github.com/noborus/xlsxsql/workflows/Go/badge.svg)](https://github.com/noborus/xlsxsql/actions)
+
 Execute SQL on xlsx file.
 
-![xlsx](docs/xlsx-multi.png)
-
-```console
-xlsxsql query -H -o md \
-"SELECT a.id,a.name,b.price FROM testdata/test3.xlsx::.C1 AS a
-  LEFT JOIN testdata/test3.xlsx::.F4 AS b ON a.id=b.id"
-```
+![xlsxsql query -H -o md "SELECT a.id,a.name,b.price FROM testdata/test3.xlsx::.C1 AS a LEFT JOIN testdata/test3.xlsx::.F4 AS b ON a.id=b.id"](docs/xlsxsql.png)
 
 | id |  name  | price |
 |----|--------|-------|
@@ -173,18 +170,24 @@ xlsxsql query --out JSONL "SELECT * FROM test.xlsx::Sheet2"
 
 You can choose from CSV, LTSV, JSON, JSONL, TBLN, RAW, MD, VF, YAML.
 
-### Skip and Header Options
+### Header Options
 
-You can use the `--skip` option to ignore a certain number of rows at the beginning of the sheet.
-For example, to skip the first two rows, you would use:
-
-```console
-xlsxsql query --skip 2 --out JSONL "SELECT * FROM test.xlsx::Sheet2"
-```
-
-The `--header` option treats the first row (excluding any rows ignored by `--skip``) as the header.
-For example, you would use it like this:
+The `--header` or `-H` option treats the first line as a header.
+Headers are treated as column names.
+For example, use:
 
 ```console
 xlsxsql query --header --out JSONL "SELECT * FROM test.xlsx::Sheet2"
 ```
+
+### Skip Options
+
+The `--skip` or `-s` option skips the specified number of lines.
+For example, you would use it like this:
+
+```console
+xlsxsql query --skip 1 "SELECT * FROM test.xlsx::Sheet2"
+```
+
+Skip is useful when specifying sheets, allowing you to skip unnecessary rows.
+(There seems to be no advantage to using skip when specifying Cell.)
