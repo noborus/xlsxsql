@@ -95,7 +95,11 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 		if r.names[i] != "" {
 			validColumns[i] = true
 		} else {
-			r.names[i] = fmt.Sprintf("C%d", i+1)
+			name, err := cellName(cellX + i)
+			if err != nil {
+				return nil, err
+			}
+			r.names[i] = name
 		}
 	}
 	for j, row := range rows {
@@ -104,6 +108,9 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 		}
 		data := make([]interface{}, columnNum)
 		for c, i := 0, cellX; i < len(row); i++ {
+			if c >= columnNum {
+				break
+			}
 			data[c] = row[i]
 			if data[c] != "" {
 				validColumns[c] = true
@@ -119,32 +126,62 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 	}
 
 	r.body = filterColumns(body, validColumns)
+	if len(r.body) == 0 {
+		return nil, ErrNoData
+	}
 	r.names = r.names[:len(r.body[0])]
 	r.types = r.types[:len(r.body[0])]
 	return r, nil
 }
 
-func filterColumns(body [][]interface{}, dataFlag []bool) [][]interface{} {
-	count := len(dataFlag)
-	start := false
-	for i, f := range dataFlag {
-		if f {
-			start = true
+func cellName(i int) (string, error) {
+	cn, err := excelize.CoordinatesToCellName(i+1, 1)
+	if err != nil {
+		return "", err
+	}
+	return cn, nil
+}
+
+func filterColumns(src [][]interface{}, validColumns []bool) [][]interface{} {
+	num := columnNum(validColumns)
+	dst := make([][]interface{}, 0, len(src))
+	startRow := false
+	for _, row := range src {
+		cols := make([]interface{}, num)
+		valid := false
+		for i := 0; i < num; i++ {
+			cols[i] = row[i]
+			if cols[i] != nil && cols[i] != "" {
+				valid = true
+			}
 		}
-		if start && !f {
+		if valid {
+			startRow = true
+			dst = append(dst, cols)
+			continue
+		}
+		if startRow {
+			break
+		} else {
+			continue
+		}
+	}
+	return dst
+}
+
+func columnNum(validColumns []bool) int {
+	count := len(validColumns)
+	startCol := false
+	for i, f := range validColumns {
+		if f {
+			startCol = true
+		}
+		if startCol && !f {
 			count = i
 			break
 		}
 	}
-	newBody := make([][]interface{}, 0, len(body))
-	for _, row := range body {
-		cols := make([]interface{}, count)
-		for i := 0; i < count; i++ {
-			cols[i] = row[i]
-		}
-		newBody = append(newBody, cols)
-	}
-	return newBody
+	return count
 }
 
 func parseExtend(ext string) (string, string) {
@@ -166,7 +203,12 @@ func nameType(row []string, cellX int, columnNum int, header bool) ([]string, []
 	for i := cellX; i < cellX+columnNum; i++ {
 		if header && len(row) > i && row[i] != "" {
 			if _, ok := nameMap[row[i]]; ok {
-				names[c] = fmt.Sprintf("C%d", i+1)
+				name, err := cellName(cellX + i)
+				if err != nil {
+					names[c] = row[i] + "_" + fmt.Sprint(i)
+				} else {
+					names[c] = name
+				}
 			} else {
 				nameMap[row[i]] = true
 				names[c] = row[i]
