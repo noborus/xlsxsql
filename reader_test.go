@@ -147,7 +147,7 @@ func TestXLSXReader_Names(t *testing.T) {
 				fileName: "testdata/test1.xlsx",
 				opts:     &trdsql.ReadOpts{InPreRead: 1},
 			},
-			[]string{"C1", "C2"},
+			[]string{"A1", "B1"},
 			false,
 		},
 		{

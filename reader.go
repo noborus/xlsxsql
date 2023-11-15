@@ -95,7 +95,7 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 		if r.names[i] != "" {
 			validColumns[i] = true
 		} else {
-			r.names[i] = fmt.Sprintf("C%d", i+1)
+			r.names[i] = cellName(i)
 		}
 	}
 	for j, row := range rows {
@@ -125,6 +125,14 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 	r.names = r.names[:len(r.body[0])]
 	r.types = r.types[:len(r.body[0])]
 	return r, nil
+}
+
+func cellName(i int) string {
+	cn, err := excelize.CoordinatesToCellName(i+1, 1)
+	if err != nil {
+		return fmt.Sprintf("C%d", i+1)
+	}
+	return cn
 }
 
 func filterColumns(src [][]interface{}, dataFlag []bool) [][]interface{} {
@@ -176,7 +184,7 @@ func nameType(row []string, cellX int, columnNum int, header bool) ([]string, []
 	for i := cellX; i < cellX+columnNum; i++ {
 		if header && len(row) > i && row[i] != "" {
 			if _, ok := nameMap[row[i]]; ok {
-				names[c] = fmt.Sprintf("C%d", i+1)
+				names[c] = cellName(i)
 			} else {
 				nameMap[row[i]] = true
 				names[c] = row[i]
