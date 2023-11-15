@@ -206,8 +206,9 @@ func nameType(row []string, cellX int, columnNum int, header bool) ([]string, []
 				name, err := cellName(cellX + i)
 				if err != nil {
 					names[c] = row[i] + "_" + fmt.Sprint(i)
+				} else {
+					names[c] = name
 				}
-				names[c] = name
 			} else {
 				nameMap[row[i]] = true
 				names[c] = row[i]
