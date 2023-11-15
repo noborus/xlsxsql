@@ -95,7 +95,7 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 		if r.names[i] != "" {
 			validColumns[i] = true
 		} else {
-			r.names[i] = cellName(i)
+			r.names[i] = cellName(cellX + i)
 		}
 	}
 	for j, row := range rows {
@@ -104,14 +104,14 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 		}
 		data := make([]interface{}, columnNum)
 		for c, i := 0, cellX; i < len(row); i++ {
+			if c >= columnNum {
+				break
+			}
 			data[c] = row[i]
 			if data[c] != "" {
 				validColumns[c] = true
 			}
 			c++
-			if len(data) <= c {
-				break
-			}
 		}
 		body = append(body, data)
 	}
@@ -122,6 +122,9 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 	}
 
 	r.body = filterColumns(body, validColumns)
+	if len(r.body) == 0 {
+		return nil, ErrNoData
+	}
 	r.names = r.names[:len(r.body[0])]
 	r.types = r.types[:len(r.body[0])]
 	return r, nil
@@ -135,34 +138,46 @@ func cellName(i int) string {
 	return cn
 }
 
-func filterColumns(src [][]interface{}, dataFlag []bool) [][]interface{} {
-	count := len(dataFlag)
-	start := false
-	for i, f := range dataFlag {
-		if f {
-			start = true
+func filterColumns(src [][]interface{}, validColumns []bool) [][]interface{} {
+	num := columnNum(validColumns)
+	dst := make([][]interface{}, 0, len(src))
+	startRow := false
+	for _, row := range src {
+		cols := make([]interface{}, num)
+		valid := false
+		for i := 0; i < num; i++ {
+			cols[i] = row[i]
+			if cols[i] != nil && cols[i] != "" {
+				valid = true
+			}
 		}
-		if start && !f {
+		if valid {
+			startRow = true
+			dst = append(dst, cols)
+			continue
+		}
+		if startRow {
+			break
+		} else {
+			continue
+		}
+	}
+	return dst
+}
+
+func columnNum(validColumns []bool) int {
+	count := len(validColumns)
+	startCol := false
+	for i, f := range validColumns {
+		if f {
+			startCol = true
+		}
+		if startCol && !f {
 			count = i
 			break
 		}
 	}
-	dst := make([][]interface{}, 0, len(src))
-	for _, row := range src {
-		cols := make([]interface{}, count)
-		valid := false
-		for i := 0; i < count; i++ {
-			cols[i] = row[i]
-			if cols[i] != "" {
-				valid = true
-			}
-		}
-		if !valid {
-			break
-		}
-		dst = append(dst, cols)
-	}
-	return dst
+	return count
 }
 
 func parseExtend(ext string) (string, string) {
