@@ -21,7 +21,7 @@ var (
 type XLSXReader struct {
 	names []string
 	types []string
-	body  [][]interface{}
+	body  [][]any
 }
 
 // NewXLSXReader function takes an io.Reader and trdsql.ReadOpts, and returns a new XLSXReader.
@@ -89,7 +89,7 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 
 	r.names, r.types = nameType(rows[header], cellX, columnNum, opts.InHeader)
 	rowNum := len(rows) - skip
-	body := make([][]interface{}, 0, rowNum)
+	body := make([][]any, 0, rowNum)
 	validColumns := make([]bool, columnNum)
 	for i := 0; i < len(r.names); i++ {
 		if r.names[i] != "" {
@@ -106,7 +106,7 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 		if j < skip {
 			continue
 		}
-		data := make([]interface{}, columnNum)
+		data := make([]any, columnNum)
 		for c, i := 0, cellX; i < len(row); i++ {
 			if c >= columnNum {
 				break
@@ -142,12 +142,12 @@ func cellName(i int) (string, error) {
 	return cn, nil
 }
 
-func filterColumns(src [][]interface{}, validColumns []bool) [][]interface{} {
+func filterColumns(src [][]any, validColumns []bool) [][]any {
 	num := columnNum(validColumns)
-	dst := make([][]interface{}, 0, len(src))
+	dst := make([][]any, 0, len(src))
 	startRow := false
 	for _, row := range src {
-		cols := make([]interface{}, num)
+		cols := make([]any, num)
 		valid := false
 		for i := 0; i < num; i++ {
 			cols[i] = row[i]
@@ -249,12 +249,12 @@ func (r XLSXReader) Types() ([]string, error) {
 }
 
 // PreReadRow returns the rows of the XLSX file.
-func (r XLSXReader) PreReadRow() [][]interface{} {
+func (r XLSXReader) PreReadRow() [][]any {
 	return r.body
 }
 
 // ReadRow only returns EOF.
-func (r XLSXReader) ReadRow(row []interface{}) ([]interface{}, error) {
+func (r XLSXReader) ReadRow(row []any) ([]any, error) {
 	return nil, io.EOF
 }
 
