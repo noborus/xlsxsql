@@ -146,7 +146,7 @@ xlsxsql query -H -o md \
 ### Shorthand designation
 
 The `table` command is a shorthand that allows you to quickly display the contents of a specified sheet in a table format.
-The syntax is `xlsxsql table <filename>::<sheetname>`.
+The syntax is `xlsxsql table <filename>::<sheetname>.<cellname>`.
 If no sheet name is specified, the first sheet of the Excel file will be targeted.
 
 Here is an example:
@@ -165,7 +165,7 @@ You can choose from CSV, LTSV, JSON, JSONL, TBLN, RAW, MD, VF, YAML.
 
 ### Skip and Header Options
 
-You can use the `--skip` option to ignore a certain number of rows at the beginning of the sheet. 
+You can use the `--skip` option to ignore a certain number of rows at the beginning of the sheet.
 For example, to skip the first two rows, you would use:
 
 ```console
