@@ -20,7 +20,6 @@ builds:
     ignore:
       - goos: windows
         goarch: "386"
-
 archives:
   - format: tar.gz
     # this name template makes the OS and Arch compatible with the results of uname.
@@ -45,6 +44,17 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+nfpms:
+  -
+    package_name: "xlsxsql"
+    homepage: "https://github.com/noborus/xlsxsql"
+    maintainer: "Noboru Saito <noborusai@gmail.com>"
+    description: "A CLI tool to execute SQL queries on xlsx files"
+    license: "MIT"
+    formats:
+      - deb
+      - rpm
+
 brews:
   -
     name: xlsxsql

@@ -3,7 +3,7 @@
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/noborus/xlsxsql)](https://pkg.go.dev/github.com/noborus/xlsxsql)
 [![Actions Status](https://github.com/noborus/xlsxsql/workflows/Go/badge.svg)](https://github.com/noborus/xlsxsql/actions)
 
-Execute SQL on xlsx file.
+A CLI tool to execute SQL queries on xlsx files.
 
 ![xlsxsql query -H -o md "SELECT a.id,a.name,b.price FROM testdata/test3.xlsx::.C1 AS a LEFT JOIN testdata/test3.xlsx::.F4 AS b ON a.id=b.id"](docs/xlsxsql.png)
 
@@ -83,7 +83,7 @@ Flags:
 Use "xlsxsql [command] --help" for more information about a command.
 ```
 
-### list sheets
+### List sheets
 
 ```console
 $ xlsxsql list test.xlsx
@@ -119,6 +119,9 @@ Carol,30
 ```
 
 ### Specify sheet
+
+The sheet can be specified by using a double colon "::" after the file name
+(the first sheet is selected by default if not specified).
 
 ```console
 xlsxsql query "SELECT * FROM test.xlsx::Sheet2"
@@ -159,7 +162,7 @@ If no sheet name is specified, the first sheet of the Excel file will be targete
 Here is an example:
 
 ```console
-xlsxsql table test.xlsx::Sheet2
+xlsxsql table test.xlsx::Sheet2.C1
 ```
 
 ### Output format
