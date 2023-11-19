@@ -59,11 +59,19 @@ var Skip int
 
 var Header bool
 
+var OutFileName string
+var OutSheetName string
+
+var ClearSheet bool
+
 func init() {
 	rootCmd.PersistentFlags().BoolVarP(&Ver, "version", "v", false, "display version information")
 	rootCmd.PersistentFlags().BoolVarP(&Debug, "debug", "", false, "debug mode")
 	rootCmd.PersistentFlags().IntVarP(&Skip, "skip", "s", 0, "Skip the number of lines")
 	rootCmd.PersistentFlags().BoolVarP(&Header, "header", "H", false, "Input header")
 	rootCmd.PersistentFlags().BoolVarP(&OutHeader, "out-header", "O", false, "Output header")
-	rootCmd.PersistentFlags().StringVarP(&OutFormat, "out", "o", "CSV", "Output Format[CSV|AT|LTSV|JSON|JSONL|TBLN|RAW|MD|VF|YAML]")
+	rootCmd.PersistentFlags().StringVarP(&OutFormat, "out", "o", "GUESS", "Output Format[CSV|AT|LTSV|JSON|JSONL|TBLN|RAW|MD|VF|YAML]")
+	rootCmd.PersistentFlags().StringVarP(&OutFileName, "out-xlsx", "x", "", "File name to output to xlsx file")
+	rootCmd.PersistentFlags().StringVarP(&OutSheetName, "out-sheet", "S", "", "Sheet name to output to xlsx file")
+	rootCmd.PersistentFlags().BoolVarP(&ClearSheet, "clear-sheet", "D", false, "Clear sheet when outputting to xlsx file")
 }
