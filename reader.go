@@ -46,6 +46,7 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 		}
 		isFilter = true
 		cellX--
+		cellY--
 	}
 
 	rows, err := f.GetRows(sheet)
@@ -87,7 +88,7 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 		}
 	}
 
-	r.names, r.types = nameType(rows[header], cellX, columnNum, opts.InHeader)
+	r.names, r.types = nameType(rows[header], cellX, cellY, columnNum, opts.InHeader)
 	rowNum := len(rows) - skip
 	body := make([][]any, 0, rowNum)
 	validColumns := make([]bool, columnNum)
@@ -95,7 +96,7 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 		if r.names[i] != "" {
 			validColumns[i] = true
 		} else {
-			name, err := cellName(cellX + i)
+			name, err := cellName(cellX+i, cellY)
 			if err != nil {
 				return nil, err
 			}
@@ -134,8 +135,8 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 	return r, nil
 }
 
-func cellName(i int) (string, error) {
-	cn, err := excelize.CoordinatesToCellName(i+1, 1)
+func cellName(x int, y int) (string, error) {
+	cn, err := excelize.CoordinatesToCellName(x+1, y+1)
 	if err != nil {
 		return "", err
 	}
@@ -195,7 +196,7 @@ func parseExtend(ext string) (string, string) {
 	}
 }
 
-func nameType(row []string, cellX int, columnNum int, header bool) ([]string, []string) {
+func nameType(row []string, cellX int, cellY int, columnNum int, header bool) ([]string, []string) {
 	nameMap := make(map[string]bool)
 	names := make([]string, columnNum)
 	types := make([]string, columnNum)
@@ -203,7 +204,7 @@ func nameType(row []string, cellX int, columnNum int, header bool) ([]string, []
 	for i := cellX; i < cellX+columnNum; i++ {
 		if header && len(row) > i && row[i] != "" {
 			if _, ok := nameMap[row[i]]; ok {
-				name, err := cellName(cellX + i)
+				name, err := cellName(cellX+i, cellY)
 				if err != nil {
 					names[c] = row[i] + "_" + fmt.Sprint(i)
 				} else {
