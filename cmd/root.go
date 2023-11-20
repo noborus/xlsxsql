@@ -20,7 +20,10 @@ Output to CSV and various formats.`,
 			fmt.Printf("xlsxsql version %s rev:%s\n", Version, Revision)
 			return
 		}
-		cmd.Help()
+		if err := cmd.Help(); err != nil {
+			cmd.SetOutput(os.Stderr)
+			os.Exit(1)
+		}
 	},
 }
 
@@ -38,7 +41,6 @@ func Execute(version string, revision string) {
 	Revision = revision
 	if err := rootCmd.Execute(); err != nil {
 		rootCmd.SetOutput(os.Stderr)
-		rootCmd.Println(err)
 		os.Exit(1)
 	}
 }
@@ -76,12 +78,16 @@ var ClearSheet bool
 func init() {
 	rootCmd.PersistentFlags().BoolVarP(&Ver, "version", "v", false, "display version information")
 	rootCmd.PersistentFlags().BoolVarP(&Debug, "debug", "", false, "debug mode")
+
+	// Input
 	rootCmd.PersistentFlags().IntVarP(&Skip, "skip", "s", 0, "Skip the number of lines")
 	rootCmd.PersistentFlags().BoolVarP(&Header, "header", "H", false, "Input header")
-	rootCmd.PersistentFlags().BoolVarP(&OutHeader, "out-header", "O", false, "Output header")
-	rootCmd.PersistentFlags().StringVarP(&OutFormat, "out", "o", "GUESS", "Output Format[CSV|AT|LTSV|JSON|JSONL|TBLN|RAW|MD|VF|YAML]")
-	rootCmd.PersistentFlags().StringVarP(&OutFileName, "out-xlsx", "x", "", "File name to output to xlsx file")
-	rootCmd.PersistentFlags().StringVarP(&OutSheetName, "out-sheet", "S", "", "Sheet name to output to xlsx file")
-	rootCmd.PersistentFlags().StringVarP(&OutCell, "out-cell", "C", "", "Cell name to output to xlsx file")
-	rootCmd.PersistentFlags().BoolVarP(&ClearSheet, "clear-sheet", "D", false, "Clear sheet when outputting to xlsx file")
+
+	// Output
+	rootCmd.PersistentFlags().StringVarP(&OutFormat, "out", "o", "GUESS", "Output Format[CSV|AT|LTSV|JSON|JSONL|TBLN|RAW|MD|VF|YAML|XLSX]")
+	rootCmd.PersistentFlags().StringVarP(&OutFileName, "out-file", "O", "", "File name to output to file")
+	rootCmd.PersistentFlags().BoolVarP(&OutHeader, "out-header", "", false, "Output header")
+	rootCmd.PersistentFlags().StringVarP(&OutSheetName, "out-sheet", "", "", "Sheet name to output to xlsx file")
+	rootCmd.PersistentFlags().StringVarP(&OutCell, "out-cell", "", "", "Cell name to output to xlsx file")
+	rootCmd.PersistentFlags().BoolVarP(&ClearSheet, "clear-sheet", "", false, "Clear sheet when outputting to xlsx file")
 }
