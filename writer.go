@@ -96,7 +96,6 @@ func NewXLSXWriter(options ...WriteOpt) (*XLSXWriter, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	cellX, cellY := getCell(writeOpts.Cell)
 
 	n, err := f.GetSheetIndex(writeOpts.Sheet)
@@ -189,7 +188,9 @@ func (w *XLSXWriter) PreWrite(columns []string, types []string) error {
 		if err != nil {
 			return err
 		}
-		w.f.SetCellValue(w.sheet, cell, v)
+		if err := w.f.SetCellValue(w.sheet, cell, v); err != nil {
+			return err
+		}
 	}
 	w.rowID++
 	return nil
@@ -206,7 +207,9 @@ func (w *XLSXWriter) WriteRow(row []interface{}, columns []string) error {
 		if err != nil {
 			return err
 		}
-		w.f.SetCellValue(w.sheet, cell, v)
+		if err := w.f.SetCellValue(w.sheet, cell, v); err != nil {
+			return err
+		}
 	}
 	return nil
 }
