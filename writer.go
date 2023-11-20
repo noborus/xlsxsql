@@ -1,11 +1,16 @@
 package xlsxsql
 
 import (
+	"errors"
+	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/xuri/excelize/v2"
 )
+
+var ErrInvalidFileName = errors.New("file name must end with .xlsx")
 
 // XLSXWriter is a writer for XLSX files.
 type XLSXWriter struct {
@@ -131,6 +136,12 @@ func NewXLSXWriter(options ...WriteOpt) (*XLSXWriter, error) {
 func openXLSXFile(fileName string) (*excelize.File, error) {
 	var f *excelize.File
 	var err error
+
+	// Check if file name ends with .xlsx
+	if !strings.HasSuffix(fileName, ".xlsx") {
+		return nil, fmt.Errorf("%w: [%s]", ErrInvalidFileName, fileName)
+	}
+
 	if _, err = os.Stat(fileName); err != nil && !os.IsNotExist(err) {
 		return nil, err
 	}
@@ -171,7 +182,9 @@ func clearSheet(f *excelize.File, sheet string) error {
 			if err != nil {
 				return err
 			}
-			f.SetCellStr(sheet, axis, "")
+			if err := f.SetCellStr(sheet, axis, ""); err != nil {
+				return err
+			}
 		}
 	}
 	return nil
