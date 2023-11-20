@@ -3,7 +3,7 @@
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/noborus/xlsxsql)](https://pkg.go.dev/github.com/noborus/xlsxsql)
 [![Actions Status](https://github.com/noborus/xlsxsql/workflows/Go/badge.svg)](https://github.com/noborus/xlsxsql/actions)
 
-A CLI tool to execute SQL queries on xlsx files and output the results to xlsx format.
+A CLI tool that executes SQL queries on various files including xlsx files and outputs the results to various files.
 
 ![xlsxsql query -H -o md "SELECT a.id,a.name,b.price FROM testdata/test3.xlsx::.C1 AS a LEFT JOIN testdata/test3.xlsx::.F4 AS b ON a.id=b.id"](docs/xlsxsql.png)
 
@@ -13,8 +13,8 @@ A CLI tool to execute SQL queries on xlsx files and output the results to xlsx f
 |  2 | orange |    50 |
 |  3 | melon  |   500 |
 
-Execute SQL on xlsx files and output the results to xlsx format using [xcelize](https://github.com/qax-os/excelize) and [trdsql](https://github.com/noborus/trdsql).
-Output to various formats.
+A CLI tool that executes SQL queries on xlsx files and outputs the results to various files, and also executes SQL queries on various files and outputs them to xlsx files.
+Built using [excelize](https://github.com/qax-os/excelize) and [trdsql](https://github.com/noborus/trdsql).
 
 ## Install
 
