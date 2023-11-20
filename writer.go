@@ -92,22 +92,9 @@ func NewXLSXWriter(options ...WriteOpt) (*XLSXWriter, error) {
 		option(writeOpts)
 	}
 
-	var f *excelize.File
-	{
-		var err error
-		if _, err = os.Stat(writeOpts.FileName); err != nil && !os.IsNotExist(err) {
-			return nil, err
-		}
-		if os.IsNotExist(err) {
-			// File does not exist, create a new one
-			f = excelize.NewFile()
-		} else {
-			// File exists, open it
-			f, err = excelize.OpenFile(writeOpts.FileName)
-			if err != nil {
-				return nil, err
-			}
-		}
+	f, err := openXLSXFile(writeOpts.FileName)
+	if err != nil {
+		return nil, err
 	}
 
 	cellX, cellY := getCell(writeOpts.Cell)
@@ -116,15 +103,14 @@ func NewXLSXWriter(options ...WriteOpt) (*XLSXWriter, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	if writeOpts.ClearSheet {
-		if n >= 0 {
-			// Sheet exists,clear it
-			if err := clearSheet(f, writeOpts.Sheet); err != nil {
-				return nil, err
-			}
+	// Only attempt to clear the sheet if it exists.
+	if writeOpts.ClearSheet && n >= 0 {
+		// Sheet exists,clear it
+		if err := clearSheet(f, writeOpts.Sheet); err != nil {
+			return nil, err
 		}
 	}
+
 	if n < 0 {
 		// Sheet does not exist, create a new one
 		if _, err := f.NewSheet(writeOpts.Sheet); err != nil {
@@ -140,6 +126,26 @@ func NewXLSXWriter(options ...WriteOpt) (*XLSXWriter, error) {
 		sheet:    writeOpts.Sheet,
 		header:   writeOpts.Header,
 	}, nil
+}
+
+// openXLSXFile function opens the XLSX file.
+func openXLSXFile(fileName string) (*excelize.File, error) {
+	var f *excelize.File
+	var err error
+	if _, err = os.Stat(fileName); err != nil && !os.IsNotExist(err) {
+		return nil, err
+	}
+	if os.IsNotExist(err) {
+		// File does not exist, create a new one
+		f = excelize.NewFile()
+	} else {
+		// File exists, open it
+		f, err = excelize.OpenFile(fileName)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return f, nil
 }
 
 func getCell(cellName string) (int, int) {
@@ -207,8 +213,5 @@ func (w *XLSXWriter) WriteRow(row []interface{}, columns []string) error {
 
 // PostWrite function closes the XLSXWriter.
 func (w *XLSXWriter) PostWrite() error {
-	if err := w.f.SaveAs(w.fileName); err != nil {
-		return err
-	}
-	return w.f.Close()
+	return w.f.SaveAs(w.fileName)
 }

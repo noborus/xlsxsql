@@ -45,7 +45,7 @@ func setWriter(fileName string) (trdsql.Writer, error) {
 
 	// XLSX Writer
 	if fileName == "" {
-		return nil, fmt.Errorf("file name is required to output with XLSX")
+		return nil, fmt.Errorf("a valid file name is required to output in XLSX format")
 	}
 
 	if OutSheetName == "" {
