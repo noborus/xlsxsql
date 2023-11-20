@@ -51,7 +51,14 @@ func setWriter(fileName string) (trdsql.Writer, error) {
 	if OutSheetName == "" {
 		OutSheetName = "Sheet1"
 	}
-	writer, err := xlsxsql.NewXLSXWriter(os.Stdout, OutFileName, OutSheetName, ClearSheet)
+
+	writer, err := xlsxsql.NewXLSXWriter(
+		xlsxsql.FileName(fileName),
+		xlsxsql.Sheet(OutSheetName),
+		xlsxsql.Cell(OutCell),
+		xlsxsql.ClearSheet(ClearSheet),
+		xlsxsql.Header(OutHeader),
+	)
 	if err != nil {
 		return nil, err
 	}
