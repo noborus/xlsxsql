@@ -3,7 +3,7 @@
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/noborus/xlsxsql)](https://pkg.go.dev/github.com/noborus/xlsxsql)
 [![Actions Status](https://github.com/noborus/xlsxsql/workflows/Go/badge.svg)](https://github.com/noborus/xlsxsql/actions)
 
-A CLI tool to execute SQL queries on xlsx files.
+A CLI tool to execute SQL queries on xlsx files and output the results to xlsx format.
 
 ![xlsxsql query -H -o md "SELECT a.id,a.name,b.price FROM testdata/test3.xlsx::.C1 AS a LEFT JOIN testdata/test3.xlsx::.F4 AS b ON a.id=b.id"](docs/xlsxsql.png)
 
@@ -13,7 +13,7 @@ A CLI tool to execute SQL queries on xlsx files.
 |  2 | orange |    50 |
 |  3 | melon  |   500 |
 
-Execute SQL on xlsx files using [xcelize](https://github.com/qax-os/excelize) and [trdsql](https://github.com/noborus/trdsql).
+Execute SQL on xlsx files and output the results to xlsx format using [xcelize](https://github.com/qax-os/excelize) and [trdsql](https://github.com/noborus/trdsql).
 Output to various formats.
 
 ## Install
@@ -60,7 +60,7 @@ mv xlsxsql /usr/local/bin/
 ```console
 $ xlsxsql --help
 Execute SQL against xlsx file.
-output to CSV and various formats.
+Output to CSV and various formats.
 
 Usage:
   xlsxsql [flags]
@@ -74,11 +74,17 @@ Available Commands:
   table       SQL(SELECT * FROM table) for xlsx
 
 Flags:
-  -H, --header       Output header
-  -h, --help         help for xlsxsql
-  -o, --out string   Output Format[CSV|AT|LTSV|JSON|JSONL|TBLN|RAW|MD|VF|YAML] (default "CSV")
-  -s, --skip int     Skip the number of lines
-  -v, --version      display version information
+      --clear-sheet        Clear sheet when outputting to xlsx file
+      --debug              debug mode
+  -H, --header             Input header
+  -h, --help               help for xlsxsql
+  -o, --out string         Output Format[CSV|AT|LTSV|JSON|JSONL|TBLN|RAW|MD|VF|YAML|XLSX] (default "GUESS")
+      --out-cell string    Cell name to output to xlsx file
+  -O, --out-file string    File name to output to file
+      --out-header         Output header
+      --out-sheet string   Sheet name to output to xlsx file
+  -s, --skip int           Skip the number of lines
+  -v, --version            display version information
 
 Use "xlsxsql [command] --help" for more information about a command.
 ```
@@ -118,6 +124,23 @@ Bob,25
 Carol,30
 ```
 
+`xlsxsql` is an extended version of [trdsql](https://github.com/noborus/trdsql),
+so you can execute SQL on files such as CSV and JSON.
+
+```console
+xlsxsql query "SELECT * FROM test.csv"
+```
+
+In other words, you can also do CSV and JOIN.
+
+```console
+xlsxsql query -H -o md \
+"SELECT a.id,a.name,b.price 
+  FROM testdata/test3.xlsx::.C1 AS a
+  LEFT JOIN test.csv AS b 
+    ON a.id=b.id"
+```
+
 ### Specify sheet
 
 The sheet can be specified by using a double colon "::" after the file name
@@ -141,7 +164,8 @@ Optional if the sheet is the first sheet.
 xlsxsql query "SELECT * FROM test3.xlsx::.C1"
 ```
 
-Note: If cell is specified, the table up to the blank column is considered to be the table.
+> Note:
+> If cell is specified, the table up to the blank column is considered to be the table.
 ​
 This allows multiple tables to be specified on one sheet, and JOIN is also possible.
 
@@ -165,22 +189,10 @@ Here is an example:
 xlsxsql table test.xlsx::Sheet2.C1
 ```
 
-### Output format
+It can be omitted for the first sheet.
 
 ```console
-xlsxsql query --out JSONL "SELECT * FROM test.xlsx::Sheet2"
-```
-
-You can choose from CSV, LTSV, JSON, JSONL, TBLN, RAW, MD, VF, YAML.
-
-### Header Options
-
-The `--header` or `-H` option treats the first line as a header.
-Headers are treated as column names.
-For example, use:
-
-```console
-xlsxsql query --header --out JSONL "SELECT * FROM test.xlsx::Sheet2"
+xlsxsql table test.xlsx::.C1
 ```
 
 ### Skip Options
@@ -194,3 +206,40 @@ xlsxsql query --skip 1 "SELECT * FROM test.xlsx::Sheet2"
 
 Skip is useful when specifying sheets, allowing you to skip unnecessary rows.
 (There seems to be no advantage to using skip when specifying Cell.)
+
+### Output format
+
+```console
+xlsxsql query --out JSONL "SELECT * FROM test.xlsx::Sheet2"
+```
+
+You can choose from CSV, LTSV, JSON, JSONL, TBLN, RAW, MD, VF, YAML, (XLSX).
+
+### Output to xlsx file
+
+You can output the result to an xlsx file by specifying a file name with the `.xlsx` extension as the `--out-file` option. For example:
+
+```console
+xlsxsql query --out-file test2.xlsx "SELECT * FROM test.xlsx::Sheet2"
+```
+
+> Note:
+> You can also output to the same xlsx file as the input file. Please be careful as the contents will be overwritten.
+
+> Note:
+> Even if you specify XLSX with --out, you must specify a file name with the extension `.xlsx`.
+
+This command will execute the SQL query on the Sheet1 of test.xlsx and output the result to result.xlsx.
+If the file does not exist, it will be created. If the file already exists, the results will be updated.
+
+You can specify the `sheet` and `cell` to output, if you want to output to an xlsx file. For example:
+
+```console
+xlsxsql query --out-file test2.xlsx --out-sheet Sheet2 --out-cell C1 "SELECT * FROM test.xlsx::Sheet2"
+```
+
+You can clear the sheet before outputting to an xlsx file by specifying the `--clear-sheet` option. For example:
+
+```console
+xlsxsql query --out-file test2.xlsx --clear-sheet "SELECT * FROM test.xlsx::Sheet2"
+```
