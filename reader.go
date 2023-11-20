@@ -55,10 +55,7 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 	}
 
 	r := XLSXReader{}
-	skip := 0
-	if cellY > 0 {
-		skip = cellY - 1
-	}
+	skip := cellY
 	if opts.InSkip > 0 {
 		skip = opts.InSkip
 	}
