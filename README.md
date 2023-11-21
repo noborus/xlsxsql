@@ -164,7 +164,7 @@ Optional if the sheet is the first sheet.
 xlsxsql query "SELECT * FROM test3.xlsx::.C1"
 ```
 
-> Note:
+> [!NOTE]
 > If cell is specified, the table up to the blank column is considered to be the table.
 ​
 This allows multiple tables to be specified on one sheet, and JOIN is also possible.
@@ -223,10 +223,10 @@ You can output the result to an xlsx file by specifying a file name with the `.x
 xlsxsql query --out-file test2.xlsx "SELECT * FROM test.xlsx::Sheet2"
 ```
 
-> Note:
+> [!NOTE]
 > You can also output to the same xlsx file as the input file. Please be careful as the contents will be overwritten.
 
-> Note:
+> [!NOTE]
 > Even if you specify XLSX with --out, you must specify a file name with the extension `.xlsx`.
 
 This command will execute the SQL query on the Sheet1 of test.xlsx and output the result to result.xlsx.
