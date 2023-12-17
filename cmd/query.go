@@ -13,6 +13,7 @@ import (
 )
 
 func exec(args []string) error {
+	trdsql.EnableMultipleQueries()
 	if Debug {
 		trdsql.EnableDebug()
 	}

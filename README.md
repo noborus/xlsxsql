@@ -243,3 +243,14 @@ You can clear the sheet before outputting to an xlsx file by specifying the `--c
 ```console
 xlsxsql query --out-file test2.xlsx --clear-sheet "SELECT * FROM test.xlsx::Sheet2"
 ```
+
+### Multiple queries
+
+It is also possible to output after executing an update query.
+A SELECT query is required for output.
+
+```console
+xlsxsql query --header --out-header --out-file test.xlsx --out-sheet Sheet2 \
+"UPDATE test.xlsx SET Age=Age+1 WHERE Name='Alice';
+ SELECT * FROM test.xlsx"
+```
