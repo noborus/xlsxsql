@@ -210,7 +210,7 @@ func (w *XLSXWriter) PreWrite(columns []string, types []string) error {
 }
 
 // WriteRow function writes a row to the XLSXWriter.
-func (w *XLSXWriter) WriteRow(row []interface{}, columns []string) error {
+func (w *XLSXWriter) WriteRow(row []any, columns []string) error {
 	w.rowID++
 	for i, v := range row {
 		if v == nil {

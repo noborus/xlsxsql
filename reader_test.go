@@ -72,7 +72,7 @@ func TestXLSXReader_PreReadRow(t *testing.T) {
 	tests := []struct {
 		name string
 		xlsx xlsxReader
-		want [][]interface{}
+		want [][]any
 	}{
 		{
 			"test1",
@@ -80,7 +80,7 @@ func TestXLSXReader_PreReadRow(t *testing.T) {
 				fileName: "testdata/test1.xlsx",
 				opts:     &trdsql.ReadOpts{InPreRead: 1},
 			},
-			[][]interface{}{
+			[][]any{
 				{"1", "a"},
 				{"2", "b"},
 				{"3", "c"},
@@ -98,7 +98,7 @@ func TestXLSXReader_PreReadRow(t *testing.T) {
 					InPreRead: 1,
 				},
 			},
-			[][]interface{}{
+			[][]any{
 				{"1", "apple"},
 				{"2", "orange"},
 				{"3", "melon"},
@@ -113,7 +113,7 @@ func TestXLSXReader_PreReadRow(t *testing.T) {
 					InJQuery: "Sheet1.C1",
 				},
 			},
-			[][]interface{}{
+			[][]any{
 				{"1", "apple"},
 				{"2", "orange"},
 				{"3", "melon"},
