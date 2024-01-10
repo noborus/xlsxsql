@@ -15,7 +15,7 @@ func TestXLSXWriter_WriteRow(t *testing.T) {
 		cellName string
 	}
 	type args struct {
-		row     []interface{}
+		row     []any
 		columns []string
 		types   []string
 	}
@@ -35,7 +35,7 @@ func TestXLSXWriter_WriteRow(t *testing.T) {
 				cellName: "A1",
 			},
 			args: args{
-				row:     []interface{}{"a", "b", "c"},
+				row:     []any{"a", "b", "c"},
 				columns: []string{"A", "B", "C"},
 				types:   []string{"string", "string", "string"},
 			},
@@ -54,7 +54,7 @@ func TestXLSXWriter_WriteRow(t *testing.T) {
 				cellName: "A2",
 			},
 			args: args{
-				row:     []interface{}{"a", "b", "c"},
+				row:     []any{"a", "b", "c"},
 				columns: []string{"A", "B", "C"},
 				types:   []string{"string", "string", "string"},
 			},
