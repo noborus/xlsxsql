@@ -87,7 +87,7 @@ func stdWriter(fileName string) (trdsql.Writer, error) {
 	return w, nil
 }
 
-// queryCmd represents the query command
+// queryCmd represents the query command.
 var queryCmd = &cobra.Command{
 	Use:   "query",
 	Short: "Executes the specified SQL query against the xlsx file",
