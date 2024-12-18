@@ -7,14 +7,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// sheetsCmd represents the sheets command
+// listSheetsCmd represents the list command.
 var listSheetsCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List the sheets of the xlsx file",
 	Long:  `List the sheets of the xlsx file.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
-			return fmt.Errorf("Please specify the xlsx file.")
+			return fmt.Errorf("please specify the xlsx file")
 		}
 		list, err := xlsxsql.XLSXSheet(args[0])
 		if err != nil {

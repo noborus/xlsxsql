@@ -3,12 +3,13 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	_ "github.com/noborus/xlsxsql"
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
+// rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:   "xlsxsql",
 	Short: "Execute SQL against xlsx file.",
@@ -28,7 +29,7 @@ Output to CSV and various formats.`,
 }
 
 var (
-	// Version represents the version
+	// Version represents the version.
 	Version string
 	// Revision set "git rev-parse --short HEAD"
 	Revision string
@@ -82,9 +83,14 @@ func init() {
 	// Input
 	rootCmd.PersistentFlags().IntVarP(&Skip, "skip", "s", 0, "Skip the number of lines")
 	rootCmd.PersistentFlags().BoolVarP(&Header, "header", "H", false, "Input header")
-
 	// Output
-	rootCmd.PersistentFlags().StringVarP(&OutFormat, "out", "o", "GUESS", "Output Format[CSV|AT|LTSV|JSON|JSONL|TBLN|RAW|MD|VF|YAML|XLSX]")
+	validOutFormats := []string{"CSV", "AT", "LTSV", "JSON", "JSONL", "TBLN", "RAW", "MD", "VF", "YAML", "XLSX"}
+	outputFormats := fmt.Sprintf("Output Format[%s]", strings.Join(validOutFormats, "|"))
+	rootCmd.PersistentFlags().StringVarP(&OutFormat, "out", "o", "GUESS", outputFormats)
+	// Register the completion function for the --out flag
+	_ = rootCmd.RegisterFlagCompletionFunc("out", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return validOutFormats, cobra.ShellCompDirectiveDefault
+	})
 	rootCmd.PersistentFlags().StringVarP(&OutFileName, "out-file", "O", "", "File name to output to file")
 	rootCmd.PersistentFlags().BoolVarP(&OutHeader, "out-header", "", false, "Output header")
 	rootCmd.PersistentFlags().StringVarP(&OutSheetName, "out-sheet", "", "", "Sheet name to output to xlsx file")
