@@ -84,9 +84,18 @@ func init() {
 	rootCmd.PersistentFlags().IntVarP(&Skip, "skip", "s", 0, "Skip the number of lines")
 	rootCmd.PersistentFlags().BoolVarP(&Header, "header", "H", false, "Input header")
 	// Output
-	validOutFormats := []string{"CSV", "AT", "LTSV", "JSON", "JSONL", "TBLN", "RAW", "MD", "VF", "YAML", "XLSX"}
+	validOutFormats := []string{"GUESS", "CSV", "AT", "LTSV", "JSON", "JSONL", "TBLN", "RAW", "MD", "VF", "YAML", "XLSX"}
 	outputFormats := fmt.Sprintf("Output Format[%s]", strings.Join(validOutFormats, "|"))
 	rootCmd.PersistentFlags().StringVarP(&OutFormat, "out", "o", "GUESS", outputFormats)
+	rootCmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
+		format := strings.ToUpper(OutFormat)
+		for _, valid := range validOutFormats {
+			if format == valid {
+				return nil
+			}
+		}
+		return fmt.Errorf("invalid output format: %s", OutFormat)
+	}
 	// Register the completion function for the --out flag
 	_ = rootCmd.RegisterFlagCompletionFunc("out", func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return validOutFormats, cobra.ShellCompDirectiveDefault
