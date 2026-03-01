@@ -62,7 +62,7 @@ func NewXLSXReader(reader io.Reader, opts *trdsql.ReadOpts) (trdsql.Reader, erro
 
 	columnNum := 0
 	header := 0
-	for i := 0; i < len(rows); i++ {
+	for i := range rows {
 		if i < skip {
 			header = i + 1
 			continue
@@ -147,7 +147,7 @@ func filterColumns(src [][]any, validColumns []bool) [][]any {
 	for _, row := range src {
 		cols := make([]any, num)
 		valid := false
-		for i := 0; i < num; i++ {
+		for i := range num {
 			cols[i] = row[i]
 			if cols[i] != nil && cols[i] != "" {
 				valid = true
