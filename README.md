@@ -64,11 +64,11 @@ If dependencies are missing on Debian/Ubuntu, run:
 sudo apt-get install -f
 ```
 
-Download and install example (`v0.4.0`, amd64):
+Download and install example (`v0.5.0`, amd64):
 
 ```console
-curl -fLO https://github.com/noborus/xlsxsql/releases/download/v0.4.0/xlsxsql_0.4.0_linux_amd64.deb
-sudo dpkg -i xlsxsql_0.4.0_linux_amd64.deb
+curl -fLO https://github.com/noborus/xlsxsql/releases/download/v0.5.0/xlsxsql_0.5.0_linux_amd64.deb
+sudo dpkg -i xlsxsql_0.5.0_linux_amd64.deb
 ```
 
 ### Binary Downloads
