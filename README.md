@@ -32,6 +32,45 @@ You can install Homebrew's xlsxsql with the following command:
 brew install noborus/tap/xlsxsql
 ```
 
+### Linux packages (deb/rpm)
+
+Linux users can install prebuilt packages from the GitHub Releases page.
+
+- Debian/Ubuntu: `*.deb`
+- RHEL/Fedora/openSUSE: `*.rpm`
+
+Asset names are published like this:
+
+- `xlsxsql_<version>_linux_amd64.deb`
+- `xlsxsql_<version>_linux_amd64.rpm`
+- `xlsxsql_<version>_linux_386.deb`
+- `xlsxsql_<version>_linux_386.rpm`
+- `xlsxsql_<version>_linux_arm64.deb`
+- `xlsxsql_<version>_linux_arm64.rpm`
+
+Example:
+
+```console
+# Debian/Ubuntu
+sudo dpkg -i xlsxsql_<version>_linux_amd64.deb
+
+# RHEL/Fedora/openSUSE
+sudo rpm -i xlsxsql_<version>_linux_amd64.rpm
+```
+
+If dependencies are missing on Debian/Ubuntu, run:
+
+```console
+sudo apt-get install -f
+```
+
+Download and install example (`v0.4.0`, amd64):
+
+```console
+curl -fLO https://github.com/noborus/xlsxsql/releases/download/v0.4.0/xlsxsql_0.4.0_linux_amd64.deb
+sudo dpkg -i xlsxsql_0.4.0_linux_amd64.deb
+```
+
 ### Binary Downloads
 
 Precompiled binaries for xlsxsql are available for various platforms and architectures. You can download them from the [GitHub Releases](https://github.com/noborus/xlsxsql/releases) page.
@@ -135,9 +174,9 @@ In other words, you can also do CSV and JOIN.
 
 ```console
 xlsxsql query -H -o md \
-"SELECT a.id,a.name,b.price 
+"SELECT a.id,a.name,b.price
   FROM testdata/test3.xlsx::.C1 AS a
-  LEFT JOIN test.csv AS b 
+  LEFT JOIN test.csv AS b
     ON a.id=b.id"
 ```
 
@@ -171,9 +210,9 @@ This allows multiple tables to be specified on one sheet, and JOIN is also possi
 
 ```console
 xlsxsql query -H -o md \
-"SELECT a.id,a.name,b.price 
+"SELECT a.id,a.name,b.price
   FROM testdata/test3.xlsx::.C1 AS a
-  LEFT JOIN testdata/test3.xlsx::.F4 AS b 
+  LEFT JOIN testdata/test3.xlsx::.F4 AS b
     ON a.id=b.id"
 ```
 
