@@ -1,5 +1,7 @@
 # This is an example .goreleaser.yml file with some sensible defaults.
 # Make sure to check the documentation at https://goreleaser.com
+version: 2
+
 before:
   hooks:
     # You may remove this if you don't use go modules.
@@ -21,7 +23,7 @@ builds:
       - goos: windows
         goarch: "386"
 archives:
-  - format: tar.gz
+  - formats: [tar.gz]
     # this name template makes the OS and Arch compatible with the results of uname.
     name_template: >-
       {{ .ProjectName }}_{{ .Version }}_
@@ -33,11 +35,12 @@ archives:
     # use zip for windows archives
     format_overrides:
     - goos: windows
-      format: zip
+      formats: [zip]
+release:
+  extra_files:
+    - glob: ./dist/*.rb
 checksum:
   name_template: 'checksums.txt'
-snapshot:
-  name_template: "{{ incpatch .Version }}-next"
 changelog:
   sort: asc
   filters:
@@ -58,15 +61,10 @@ nfpms:
 brews:
   -
     name: xlsxsql
-    repository:
-      owner: noborus
-      name: homebrew-tap
-      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
-    commit_author:
-      name: noborus
-      email: noborusai@gmail.com
+    skip_upload: true
     homepage: https://github.com/noborus/xlsxsql
     description: "Execute SQL to xlsx and convert to other format"
+    license: "MIT"
 # modelines, feel free to remove those if you don't want/use them:
 # yaml-language-server: $schema=https://goreleaser.com/static/schema.json
 # vim: set ts=2 sw=2 tw=0 fo=cnqoj
