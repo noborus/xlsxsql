@@ -34,7 +34,7 @@ brew install noborus/tap/xlsxsql
 
 ### Linux packages (deb/rpm)
 
-Linux users can install prebuilt packages from the GitHub Releases page.
+Linux users can install prebuilt packages from the [GitHub Releases](https://github.com/noborus/xlsxsql/releases) page.
 
 - Debian/Ubuntu: `*.deb`
 - RHEL/Fedora/openSUSE: `*.rpm`
