@@ -38,7 +38,7 @@ archives:
       formats: [zip]
 release:
   extra_files:
-    - glob: ./dist/*.rb
+    - glob: ./dist/homebrew/*.rb
 checksum:
   name_template: 'checksums.txt'
 changelog:
