@@ -9,9 +9,11 @@ jobs:
         go-version: [ 'stable' ]
     name: Go  ${{ matrix.go-version }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
     - name: Setup Go
-      uses: actions/setup-go@v5
+      uses: actions/setup-go@v6
       with:
         go-version: ${{ matrix.go-version }}
       id: go
