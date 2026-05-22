@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 
 	_ "github.com/noborus/xlsxsql"
@@ -89,10 +90,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&OutFormat, "out", "o", "GUESS", outputFormats)
 	rootCmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		format := strings.ToUpper(OutFormat)
-		for _, valid := range validOutFormats {
-			if format == valid {
-				return nil
-			}
+		if slices.Contains(validOutFormats, format) {
+			return nil
 		}
 		return fmt.Errorf("invalid output format: %s", OutFormat)
 	}
