@@ -61,6 +61,9 @@ nfpms:
 brews:
   -
     name: xlsxsql
+    repository:
+      owner: noborus
+      name: homebrew-tap
     skip_upload: true
     homepage: https://github.com/noborus/xlsxsql
     description: "Execute SQL to xlsx and convert to other format"
