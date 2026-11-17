@@ -4,8 +4,8 @@ go 1.26.0
 
 require (
 	github.com/noborus/trdsql v1.2.3
-	github.com/spf13/cobra v1.8.1
-	github.com/xuri/excelize/v2 v2.11.0
+	github.com/spf13/cobra v1.10.2
+	github.com/xuri/excelize/v2 v2.11.1
 )
 
 require (
@@ -19,18 +19,18 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/iancoleman/orderedmap v0.3.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/itchyny/gojq v0.12.19 // indirect
+	github.com/itchyny/gojq v0.12.20 // indirect
 	github.com/itchyny/timefmt-go v0.1.9 // indirect
 	github.com/jwalton/gchalk v1.3.0 // indirect
 	github.com/jwalton/go-supportscolor v1.2.0 // indirect
-	github.com/klauspost/compress v1.20.3 // indirect
+	github.com/klauspost/compress v1.20.4 // indirect
 	github.com/lib/pq v1.12.3 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/mattn/go-runewidth v0.0.31 // indirect
-	github.com/mattn/go-sqlite3 v1.14.52 // indirect
+	github.com/mattn/go-sqlite3 v1.14.53 // indirect
 	github.com/multiprocessio/go-sqlite3-stdlib v0.0.0-20220822170115-9f6825a1cd25 // indirect
 	github.com/ncruces/go-strftime v1.1.0 // indirect
-	github.com/noborus/guesswidth v0.5.0 // indirect
+	github.com/noborus/guesswidth v0.7.0 // indirect
 	github.com/noborus/sqlss v0.1.0 // indirect
 	github.com/noborus/tbln v0.0.2 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
@@ -40,19 +40,19 @@ require (
 	github.com/richardlehane/mscfb v1.0.9 // indirect
 	github.com/richardlehane/msoleps v1.0.6 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/pflag v1.0.10 // indirect
 	github.com/tiendc/go-deepcopy v1.7.2 // indirect
 	github.com/ulikunitz/xz v0.5.17 // indirect
-	github.com/xuri/efp v0.0.2 // indirect
+	github.com/xuri/efp v0.0.3-0.20260924042702-217b81952dec // indirect
 	github.com/xuri/nfp v0.0.2-0.20250530014748-2ddeb826f9a9 // indirect
-	golang.org/x/crypto v0.58.0 // indirect
-	golang.org/x/net v0.61.0 // indirect
-	golang.org/x/sys v0.49.0 // indirect
-	golang.org/x/term v0.47.0 // indirect
-	golang.org/x/text v0.43.0 // indirect
+	golang.org/x/crypto v0.59.0 // indirect
+	golang.org/x/net v0.62.0 // indirect
+	golang.org/x/sys v0.50.0 // indirect
+	golang.org/x/term v0.48.0 // indirect
+	golang.org/x/text v0.44.0 // indirect
 	gonum.org/v1/gonum v0.17.0 // indirect
-	modernc.org/libc v1.79.0 // indirect
+	modernc.org/libc v1.81.2 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
-	modernc.org/memory v1.12.1 // indirect
-	modernc.org/sqlite v1.61.0 // indirect
+	modernc.org/memory v1.13.0 // indirect
+	modernc.org/sqlite v1.62.0 // indirect
 )
